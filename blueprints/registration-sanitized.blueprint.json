@@ -1,0 +1,100 @@
+{
+  "name": "Telegram AI Finance Registration - Public Template",
+  "flow": [
+    {
+      "id": 1,
+      "module": "telegram:WatchUpdates",
+      "version": 1,
+      "parameters": {
+        "__IMTHOOK__": 0
+      },
+      "mapper": {},
+      "metadata": {
+        "designer": {
+          "x": -2083,
+          "y": -67
+        }
+      }
+    },
+    {
+      "id": 3,
+      "module": "openai-gpt-3:askAnything",
+      "version": 1,
+      "parameters": {},
+      "filter": null,
+      "mapper": {
+        "model": "gpt-5-nano",
+        "textPrompt": "Extrae del mensaje del usuario los siguientes campos:\r\n\r\ntipo, concepto, monto, categoria, metodoDePago, persona, cuenta, fiscal, iva, iva retencion, isr retencion, estado, notas.\r\n\r\nREGLAS GENERALES\r\n\r\n- Devuelve únicamente los datos solicitados.\r\n- No inventes información que no pueda determinarse del mensaje, excepto cuando las reglas siguientes indiquen que un valor puede inferirse.\r\n- Mantén nombres y categorías consistentes para que movimientos equivalentes siempre se registren de la misma manera.\r\n- El monto indicado por el usuario debe guardarse en \"monto\".\r\n- Cuando el usuario hable de una factura con IVA y retenciones, considera el monto indicado como el subtotal antes de impuestos.\r\n\r\nTIPO\r\n\r\n- \"tipo\" solo puede ser \"ingreso\" o \"egreso\".\r\n- Si el mensaje describe dinero recibido, un depósito, un cobro o un pago recibido, usa \"ingreso\".\r\n- Si describe una compra, gasto, pago o salida de dinero, usa \"egreso\".\r\n\r\nPERSONA\r\n\r\n- \"persona\" solo puede ser \"Persona A\" o \"Persona B\".\r\n- Nunca pongas el nombre de una cuenta bancaria o tarjeta en \"persona\".\r\n\r\nCUENTA\r\n\r\n- \"cuenta\" corresponde a la cuenta, banco o tarjeta utilizada, por ejemplo: \"Santander\", \"Nu\", \"Plata Card\", etc.\r\n- Nunca pongas la cuenta en el campo \"persona\".\r\n\r\nCONCEPTO\r\n\r\n- Usa conceptos cortos, claros y consistentes.\r\n- No incluyas en \"concepto\" el monto, IVA, retenciones, persona, cuenta, método de pago ni estado.\r\n- Para ingresos provenientes de trabajos, diseño, edición, servicios, honorarios o trabajos freelance, usa \"Servicios profesionales\".\r\n- Evita variantes como \"Pago por trabajo\", \"Pago recibido por trabajo\", \"Trabajo\", \"Pago por servicio\" o expresiones equivalentes.\r\n\r\nCATEGORÍA\r\n\r\n- El campo \"categoria\" debe contener únicamente una de las categorías permitidas de la siguiente lista:\r\n  - Hipoteca\r\n  - Prepa\r\n  - Comida\r\n  - Internet\r\n  - Adobe Persona B\r\n  - Adobe Persona A\r\n  - Netflix\r\n  - Prime\r\n  - Francés\r\n  - Kpop\r\n  - Batería\r\n  - Luz\r\n  - Mantenimiento\r\n  - Gas\r\n  - Celular Persona B\r\n  - Celular Persona A\r\n  - Celular Persona C\r\n  - Spotify\r\n  - Gasolina\r\n  - Pago Carro\r\n  - Salidas\r\n  - Ahorro\r\n  - Varios / Imprevistos\r\n  - Impuestos\r\n  - Salud\r\n  - Suscripciones\r\n  - TC Persona B\r\n  - TC Persona A\r\n  - Verificación Carro\r\n  - Mascota\r\n  - Mesada Persona C\r\n  - Honorarios\r\n\r\nREGLAS DE CLASIFICACIÓN\r\n\r\n- No inventes categorías nuevas ni utilices variantes de los nombres anteriores.\r\n- Si el usuario menciona directamente una de las categorías, utiliza exactamente el nombre correspondiente de la lista.\r\n- Para ingresos por trabajos, diseño, edición, servicios profesionales, trabajos freelance u honorarios, usa \"Honorarios\".\r\n- Para supermercado, despensa, alimentos o compras de comida para el hogar, usa \"Comida\".\r\n- Para gasolina o combustible del automóvil, usa \"Gasolina\".\r\n- Para pagos de Netflix, usa \"Netflix\".\r\n- Para pagos de Amazon Prime o Prime, usa \"Prime\".\r\n- Para pagos de Spotify, usa \"Spotify\".\r\n- Para pagos de Adobe correspondientes a Persona B, usa \"Adobe Persona B\".\r\n- Para pagos de Adobe correspondientes a Persona A, usa \"Adobe Persona A\".\r\n- Para clases de francés, usa \"Francés\".\r\n- Para Kpop, usa \"Kpop\".\r\n- Para clases o actividades de batería, usa \"Batería\".\r\n- Para electricidad o recibo de luz, usa \"Luz\".\r\n- Para gas doméstico, usa \"Gas\".\r\n- Para internet, usa \"Internet\".\r\n- Para mantenimiento del hogar o condominio, cuando corresponda a ese pago habitual, usa \"Mantenimiento\".\r\n- Para el celular de Persona B, usa \"Celular Persona B\".\r\n- Para el celular de Persona A, usa \"Celular Persona A\".\r\n- Para el celular de Persona C, usa \"Celular Persona C\".\r\n- Para pagos de la hipoteca, usa \"Hipoteca\".\r\n- Para pagos de la preparatoria o prepa, usa \"Prepa\".\r\n- Para pagos del carro, usa \"Pago Carro\".\r\n- Para verificación vehicular, usa \"Verificación Carro\".\r\n- Para pagos de tarjetas de crédito de Persona B, usa \"TC Persona B\".\r\n- Para pagos de tarjetas de crédito de Persona A, usa \"TC Persona A\".\r\n- Para gastos relacionados con mascotas, usa \"Mascota\".\r\n- Para la mesada de Persona C, usa \"Mesada Persona C\".\r\n- Para impuestos, pagos al SAT u obligaciones fiscales, usa \"Impuestos\".\r\n- Para médicos, medicamentos, consultas u otros gastos de salud, usa \"Salud\".\r\n- Para dinero destinado explícitamente al ahorro, usa \"Ahorro\".\r\n- Para restaurantes, entretenimiento, paseos o salidas personales/familiares, usa \"Salidas\".\r\n- Para otras suscripciones que no tengan una categoría específica en esta lista, usa \"Suscripciones\".\r\n- Si el movimiento no corresponde claramente a ninguna categoría anterior, usa \"Varios / Imprevistos\".\r\n\r\nMÉTODO DE PAGO\r\n\r\n- Si el movimiento entra o sale de una cuenta bancaria y el usuario no especifica otro método, usa \"Transferencia bancaria\".\r\n- Si el usuario menciona efectivo, usa \"Efectivo\".\r\n- Si menciona explícitamente tarjeta de crédito, usa \"Tarjeta de crédito\".\r\n- Si menciona explícitamente tarjeta de débito, usa \"Tarjeta de débito\".\r\n- Evita usar \"No especificado\" cuando el método pueda inferirse claramente por la cuenta mencionada.\r\n- Si realmente no se puede determinar el método de pago, devuelve \"\".\r\n\r\nFISCAL\r\n\r\n- \"fiscal\" solo puede contener \"sí\" o \"no\".\r\n- Si el usuario indica explícitamente \"fiscal sí\", devuelve \"fiscal\": \"sí\".\r\n- Si el usuario indica explícitamente \"fiscal no\", devuelve \"fiscal\": \"no\".\r\n- La indicación explícita del usuario siempre tiene prioridad sobre cualquier inferencia.\r\n- Si el mensaje menciona factura, facturación, IVA, retención de IVA, retención de ISR o impuestos y el usuario no especifica lo contrario, devuelve \"fiscal\": \"sí\".\r\n- Si se trata de un gasto cotidiano o personal y el usuario no indica que es fiscal, devuelve \"fiscal\": \"no\".\r\n- No cambies \"fiscal sí\" a \"no\" aunque el concepto parezca un gasto personal.\r\n\r\nIVA Y RETENCIONES\r\n\r\n- Si el usuario indica que se trata de una factura con IVA y retenciones, toma \"monto\" como subtotal antes de impuestos.\r\n- Calcula:\r\n  - iva = monto × 0.16\r\n  - iva retencion = monto × 0.106667\r\n  - isr retencion = monto × 0.0125\r\n- Si el usuario dice \"con IVA y retenciones\", calcula siempre los tres valores.\r\n- Si el usuario menciona retenciones, \"isr retencion\" es obligatorio y debe calcularse como monto × 0.0125.\r\n- Cuando correspondan IVA o retenciones, devuelve sus importes como valores numéricos, no como porcentajes.\r\n- Cuando corresponda una retención, nunca la omitas ni devuelvas null.\r\n- Si el movimiento no tiene IVA ni retenciones, devuelve \"\" en los campos que no correspondan.\r\n\r\nESTADO\r\n\r\n- Si es un egreso que ya ocurrió, por ejemplo \"pagué\", \"compré\" o \"gasté\", devuelve \"Pagado\".\r\n- Si es un ingreso que ya fue recibido, por ejemplo \"me pagaron\", \"me depositaron\", \"cobré\" o \"recibí\", devuelve \"Cobrado\".\r\n- Si es un pago o cobro que todavía no ha ocurrido, devuelve \"Pendiente\".\r\n- \"estado\" solo puede contener \"Pagado\", \"Cobrado\" o \"Pendiente\".\r\n\r\nNOTAS\r\n\r\n- Guarda en \"notas\" cualquier información adicional que el usuario mencione y que no corresponda a los demás campos.\r\n- No repitas en \"notas\" información que ya esté guardada en tipo, concepto, monto, categoria, metodoDePago, persona, cuenta, fiscal, iva, iva retencion, isr retencion o estado.\r\n- Si el usuario dice explícitamente \"nota:\" o \"notas:\", guarda ese contenido en \"notas\".\r\n- Si no hay información adicional, devuelve \"notas\": \"\".\r\n\r\nFORMATO DE SALIDA\r\n\r\nDevuelve únicamente un objeto JSON válido con exactamente estas claves:\r\n\r\n{\r\n  \"tipo\": \"\",\r\n  \"concepto\": \"\",\r\n  \"monto\": \"\",\r\n  \"categoria\": \"\",\r\n  \"metodoDePago\": \"\",\r\n  \"persona\": \"\",\r\n  \"cuenta\": \"\",\r\n  \"fiscal\": \"\",\r\n  \"iva\": \"\",\r\n  \"iva retencion\": \"\",\r\n  \"isr retencion\": \"\",\r\n  \"estado\": \"\",\r\n  \"notas\": \"\"\r\n}\r\n\r\nNo agregues explicaciones, comentarios, texto adicional ni bloques de código fuera del JSON.{{1.message.text}}"
+      },
+      "metadata": {
+        "designer": {
+          "x": -1680,
+          "y": -66
+        }
+      }
+    },
+    {
+      "id": 4,
+      "module": "json:ParseJSON",
+      "version": 1,
+      "parameters": {
+        "type": 525749
+      },
+      "filter": null,
+      "mapper": {
+        "json": "{{3.result}}"
+      },
+      "metadata": {
+        "designer": {
+          "x": -1285,
+          "y": -70
+        }
+      }
+    },
+    {
+      "id": 2,
+      "module": "google-sheets:addRow",
+      "version": 2,
+      "parameters": {
+        "__IMTCONN__": 0
+      },
+      "mapper": {
+        "from": "drive",
+        "mode": "select",
+        "values": {
+          "IVA": "{{4.iva}}",
+          "TIPO": "{{4.tipo}}",
+          "FECHA": "{{1.message.date}}",
+          "MONTO": "{{4.monto}}",
+          "NOTAS": "{{4.notas}}",
+          "CUENTA": "{{4.cuenta}}",
+          "ESTADO": "{{4.estado}}",
+          "FISCAL": "{{4.fiscal}}",
+          "PERSONA": "{{4.persona}}",
+          "CONCEPTO": "{{4.concepto}}",
+          "CATEGORIA": "{{4.categoria}}",
+          "ISR RETENCION": "{{4.`isr retencion`}}",
+          "IVA RETENCION": "{{4.`iva retencion`}}",
+          "METODO DE PAGO": "{{4.metodoDePago}}"
+        },
+        "sheetId": "Movimientos",
+        "spreadsheetId": "REPLACE_WITH_TEST_SPREADSHEET_ID",
+        "includesHeaders": true,
+        "insertDataOption": "INSERT_ROWS",
+        "useColumnHeaders": true,
+        "valueInputOption": "USER_ENTERED",
+        "insertUnformatted": false
+      },
+      "metadata": {
+        "designer": {
+          "x": -985,
+          "y": -70
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "version": 1,
+    "instant": true
+  }
+}

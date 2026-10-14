@@ -1,0 +1,55 @@
+{
+  "name": "Payment reminders (sanitized example)",
+  "flow": [
+    {
+      "id": 1,
+      "module": "google-sheets:filterRows",
+      "version": 2,
+      "parameters": {
+        "__IMTCONN__": 0
+      },
+      "mapper": {
+        "from": "drive",
+        "sheetId": "Pagos Recurentes",
+        "sortOrder": "asc",
+        "spreadsheetId": "REPLACE_WITH_TEST_SPREADSHEET_ID",
+        "tableFirstRow": "A1:Z1",
+        "includesHeaders": true,
+        "valueRenderOption": "FORMATTED_VALUE",
+        "dateTimeRenderOption": "FORMATTED_STRING"
+      }
+    },
+    {
+      "id": 2,
+      "module": "telegram:SendReplyMessage",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": 0
+      },
+      "mapper": {
+        "text": "RECORDATORIO DE PAGO: {{1.`0`}} MONTO MXN: {{1.`1`}} FECHA LIMITE: {{1.`4`}}",
+        "chatId": "REPLACE_WITH_TEST_CHAT_ID",
+        "parseMode": "",
+        "replyMarkup": "",
+        "messageThreadId": "",
+        "replyToMessageId": "",
+        "replyMarkupAssembleType": "reply_markup_enter"
+      },
+      "filter": {
+        "name": "Recordatorio de pago hoy",
+        "conditions": [
+          [
+            {
+              "a": "{{formatDate(now; \"YYYY-MM-DD\")}}",
+              "b": "{{formatDate(addDays(1.`9`; \"-\" + 1.`7`); \"YYYY-MM-DD\")}}",
+              "o": "text:equal"
+            }
+          ]
+        ]
+      }
+    }
+  ],
+  "notes": [
+    "Reconfigure Google Sheets and Telegram connections, destination chat, schedule and test data after import. Original identifiers removed."
+  ]
+}
